@@ -23,21 +23,21 @@ YARN (Yet Another Resource Negotiator) — это компонент из эко
 Ключевые конфигурационные файлы YARN:
 - yarn-site.xml: Основной файл конфигурации YARN.
 
--      <property>
+  -      <property>
          <name>yarn.resourcemanager.address</name>
          <value>resourcemanager_hostname:8032</value>
          <description>Адрес ResourceManager host</description>
-     </property>
-     <property>
+         </property>
+         <property>
          <name>yarn.nodemanager.resource.memory-mb</name>
          <value>16384</value>
          <description>Максимальный объем памяти RAM для контейнеров на одном узле</description>
-     </property>
-     <property>
+         </property>
+         <property>
          <name>yarn.scheduler.maximum-allocation-mb</name>
          <value>8192</value>
          <description>Максимальная память для одного контейнера</description>
-     </property>
+         </property>
      
 
 Процесс выполнения Jobs на YARN:
