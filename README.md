@@ -1,6 +1,6 @@
 # Yarn-Spark-Hive
 # YARN  
-YARN (Yet Another Resource Negotiator) — это компонент из экосистемы Hadoop, отвечающий за управление ресурсами в кластерной архитектуре.  
+YARN (Yet Another Resource Negotiator) — это компонент из экосистемы Hadoop, отвечающий за управление ресурсами в кластерной архитектуре и запускает задания (например, MapReduce, Spark или другие фреймворки).
 
 - Главная роль:
   - Управляет распределением ресурсов (CPU, память) между различными приложениями в кластере Hadoop.
@@ -13,7 +13,6 @@ YARN (Yet Another Resource Negotiator) — это компонент из эко
   
 - Пригоден для:  
   - Распределенных вычислений и обеспечения эффективного использования ресурсов.
-YARN - это менеджер ресурсов в экосистеме Hadoop, который управляет распределением ресурсов к кластере и запускает задания (например, MapReduce, Spark или другие фреймворки).
 
 Основные процессы YARN:
 1. ResourceManager (RM): Управляет всеми ресурсами кластера, занимается распределением памяти и процессорного времени.
@@ -23,6 +22,23 @@ YARN - это менеджер ресурсов в экосистеме Hadoop, 
 
 Ключевые конфигурационные файлы YARN:
 - yarn-site.xml: Основной файл конфигурации YARN.
+
+-      <property>
+         <name>yarn.resourcemanager.address</name>
+         <value>resourcemanager_hostname:8032</value>
+         <description>Адрес ResourceManager host</description>
+     </property>
+     <property>
+         <name>yarn.nodemanager.resource.memory-mb</name>
+         <value>16384</value>
+         <description>Максимальный объем памяти RAM для контейнеров на одном узле</description>
+     </property>
+     <property>
+         <name>yarn.scheduler.maximum-allocation-mb</name>
+         <value>8192</value>
+         <description>Максимальная память для одного контейнера</description>
+     </property>
+     
 
 Процесс выполнения Jobs на YARN:
 1. Клиент отправляет задание на ResourceManager.
