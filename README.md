@@ -26,24 +26,23 @@ Hive — это хранилище данных (Data Warehouse) поверх Ha
 - Пригоден для:  
   - Запросов к огромным объемам данных с использованием SQL.
 Как говорилось ранее Hive позволяет писать SQL-подобные запросы для работы с данными в HDFS (Hadoop Distributed File System). Это проще, чем писать MapReduce вручную. Вот пример запроса в Hive :
---Создаем таблицу для хранения информации о студентах
--CREATE TABLE IF NOT EXISTS students (
-    -id INT,
-    -name STRING,
-    -age INT,
-    -grade STRING
--)
--ROW FORMAT DELIMITED
--FIELDS TERMINATED BY ','
--STORED AS TEXTFILE;
 
---Загружаем данные из локального файла в таблицу Hive
--LOAD DATA LOCAL INPATH '/path/to/students.csv' INTO TABLE students;
-
---Запрос для подсчета количества студентов в каждой категории "grade"
--SELECT grade, COUNT(*) AS students_count
--FROM students
--GROUP BY grade;
+  --Создаем таблицу для хранения информации о студентах
+  -CREATE TABLE IF NOT EXISTS students (
+      -id INT,
+      -name STRING,
+      -age INT,
+      -grade STRING
+  -)
+  -ROW FORMAT DELIMITED
+  -FIELDS TERMINATED BY ','
+  -STORED AS TEXTFILE;
+  --Загружаем данные из локального файла в таблицу Hive
+  -LOAD DATA LOCAL INPATH '/path/to/students.csv' INTO TABLE students;
+  --Запрос для подсчета количества студентов в каждой категории "grade"
+  -SELECT grade, COUNT(*) AS students_count
+  -FROM students
+  -GROUP BY grade;
 
 # Spark  
 Apache Spark — это фреймворк для высокопроизводительных параллельных вычислений, предназначенный для обработки больших данных.
