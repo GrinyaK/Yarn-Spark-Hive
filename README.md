@@ -13,6 +13,24 @@ YARN (Yet Another Resource Negotiator) — это компонент из эко
   
 - Пригоден для:  
   - Распределенных вычислений и обеспечения эффективного использования ресурсов.
+YARN - это менеджер ресурсов в экосистеме Hadoop, который управляет распределением ресурсов к кластере и запускает задания (например, MapReduce, Spark или другие фреймворки).
+
+Основные процессы YARN:
+1. ResourceManager (RM): Управляет всеми ресурсами кластера, занимается распределением памяти и процессорного времени.
+2. NodeManager (NM): Работает на каждом узле кластера, отвечает за управление ресурсами данного узла, например, запуск контейнеров.
+3. ApplicationMaster (AM): Управляет выполнением конкретного приложения (например, MapReduce или Spark job). Один AM создается для каждого запущенного приложения.
+4. Container: Основная единица, которая выделяется YARN для выполнения задач (например, мапперы, редьюсеры, Spark executors).
+
+Ключевые конфигурационные файлы YARN:
+- yarn-site.xml: Основной файл конфигурации YARN.
+
+Процесс выполнения Jobs на YARN:
+1. Клиент отправляет задание на ResourceManager.
+2. ResourceManager выделяет контейнер для запуска ApplicationMaster.
+3. ApplicationMaster организует выполнение задачи на узлах.
+4. NodeManager запускает контейнеры для выполнения конкретной задачи (e.g., MapReduce Task, Spark Executor).
+5. Когда задача завершена, ApplicationMaster возвращает статус в ResourceManager и освобождает ресурсы.
+
 # Hive  
 Hive — это хранилище данных (Data Warehouse) поверх Hadoop, которое позволяет писать SQL-запросы к данным в HDFS.  
 
@@ -27,22 +45,6 @@ Hive — это хранилище данных (Data Warehouse) поверх Ha
   - Запросов к огромным объемам данных с использованием SQL.
 Как говорилось ранее Hive позволяет писать SQL-подобные запросы для работы с данными в HDFS (Hadoop Distributed File System). Это проще, чем писать MapReduce вручную. Вот пример запроса в Hive :
 
-  --Создаем таблицу для хранения информации о студентах
-  -CREATE TABLE IF NOT EXISTS students (
-      -id INT,
-      -name STRING,
-      -age INT,
-      -grade STRING
-  -)
-  -ROW FORMAT DELIMITED
-  -FIELDS TERMINATED BY ','
-  -STORED AS TEXTFILE;
-  --Загружаем данные из локального файла в таблицу Hive
-  -LOAD DATA LOCAL INPATH '/path/to/students.csv' INTO TABLE students;
-  --Запрос для подсчета количества студентов в каждой категории "grade"
-  -SELECT grade, COUNT(*) AS students_count
-  -FROM students
-  -GROUP BY grade;
 
 # Spark  
 Apache Spark — это фреймворк для высокопроизводительных параллельных вычислений, предназначенный для обработки больших данных.
