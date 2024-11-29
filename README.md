@@ -24,19 +24,19 @@ YARN (Yet Another Resource Negotiator) — это компонент из эко
 - yarn-site.xml: Основной файл конфигурации YARN.
 
   -      <property>
-         <name>yarn.resourcemanager.address</name>
-         <value>resourcemanager_hostname:8032</value>
-         <description>Адрес ResourceManager host</description>
+           <name>yarn.resourcemanager.address</name>
+           <value>resourcemanager_hostname:8032</value>
+           <description>Адрес ResourceManager host</description>
          </property>
          <property>
-         <name>yarn.nodemanager.resource.memory-mb</name>
-         <value>16384</value>
-         <description>Максимальный объем памяти RAM для контейнеров на одном узле</description>
+           <name>yarn.nodemanager.resource.memory-mb</name>
+           <value>16384</value>
+           <description>Максимальный объем памяти RAM для контейнеров на одном узле</description>
          </property>
          <property>
-         <name>yarn.scheduler.maximum-allocation-mb</name>
-         <value>8192</value>
-         <description>Максимальная память для одного контейнера</description>
+           <name>yarn.scheduler.maximum-allocation-mb</name>
+           <value>8192</value>
+           <description>Максимальная память для одного контейнера</description>
          </property>
      
 
@@ -48,7 +48,7 @@ YARN (Yet Another Resource Negotiator) — это компонент из эко
 5. Когда задача завершена, ApplicationMaster возвращает статус в ResourceManager и освобождает ресурсы.
 
 # Hive  
-Hive — это хранилище данных (Data Warehouse) поверх Hadoop, которое позволяет писать SQL-запросы к данным в HDFS.  
+Hive — это хранилище данных (Data Warehouse) поверх Hadoop, которое позволяет писать SQL-запросы к данным в MapReduce, Tez или Spark задачи для обработки данных в HDFS.
 
 - Главная роль:  
   - Позволяет аналитикам и разработчикам использовать SQL-подобный язык (HiveQL) для работы с большими данными без необходимости писать код MapReduce.
@@ -61,9 +61,39 @@ Hive — это хранилище данных (Data Warehouse) поверх Ha
   - Запросов к огромным объемам данных с использованием SQL.
 Как говорилось ранее Hive позволяет писать SQL-подобные запросы для работы с данными в HDFS (Hadoop Distributed File System). Это проще, чем писать MapReduce вручную. Вот пример запроса в Hive :
 
+Основные процессы Hive:
+1. Hive CLI или Beeline: Интерфейсы для отправки Hive-запросов.
+2. Driver: Обрабатывает запросы, создает план выполнения и управляет процессами.
+3. Metastore: Хранилище метаданных (структура таблиц, базы данных, разделов). Обычно это реляционная база данных (MySQL, PostgreSQL и т.д.).
+4. Execution Engine: Выполняет запросы через MapReduce, Tez или Spark.
+
+Ключевые конфигурационные файлы YARN:
+- hive-site.xml: Основной конфигурационный файл.
+
+       <property>
+         <name>hive.metastore.uris</name>
+         <value>thrift://metastore_hostname:9083</value>
+         <description>Адрес метастора Hive</description>
+       </property>
+       <property>
+         <name>hive.exec.dynamic.partition.mode</name>
+         <value>nonstrict</value>
+         <description>Динамическое создание разделов (partition)</description>
+       </property>
+       <property>
+         <name>hive.execution.engine</name>
+         <value>mr</value>
+         <description>Используемый движок выполнения: MR (MapReduce), Tez или Spark</description>
+       </property>
+     
+Процесс выполнения запроса:
+1. Пользователь отправляет SQL-запрос через CLI или Beeline.
+2. Driver анализирует и оптимизирует запрос, преобразуя его в серию задач (MapReduce, Tez, Spark).
+3. Execution Engine выполняет задачи на YARN.
+4. Данные возвращаются пользователю.
 
 # Spark  
-Apache Spark — это фреймворк для высокопроизводительных параллельных вычислений, предназначенный для обработки больших данных.
+Apache Spark — это фреймворк для высокопроизводительных параллельных вычислений, предназначенный для обработки больших данных. Работает на YARN или других менеджерах ресурсов.
 
 - Главная роль:  
   - Заботится об ускорении обработки данных за счет вычислений в памяти, минимизируя операции с дисками (в сравнении с MapReduce).
@@ -73,10 +103,34 @@ Apache Spark — это фреймворк для высокопроизводи
   - Работает быстрее традиционных Hadoop MapReduce.
   - Поддерживает работу как с HDFS, так и с другими источниками данных.
   
-- Компоненты Spark:
+- Spark состоит :
   - Spark SQL: Для работы с данными через SQL.
   - Spark Streaming: Для обработки потоковых данных в реальном времени.
   - MLlib: Для задач машинного обучения.
   - GraphX: Для графовых вычислений.
 - Пригоден для:  
   - Высокоскоростной обработки, потоковой обработки, многосложного анализа в распределенных системах (кластерах).
+ 
+Основные компоненты Spark:
+1. Driver Program: Запускает основное приложение Spark, обрабатывает запросы и передает задачи на исполнение.
+2. Cluster Manager (e.g., YARN): Управляет ресурсами кластера.
+3. Executors: Работают на рабочих узлах, выполняют задачи (tasks) и хранят промежуточные данные.
+4. Tasks: Конкретные единицы работы, которые выполняют отдельные части логики.
+
+Ключевые конфигурационные параметры Spark:
+Spark конфигурации можно задавать через файлы spark-defaults.conf или программно.
+
+     -spark.master                 yarn            # Менеджер ресурсов (e.g., local, standalone, yarn)
+      spark.executor.memory        4g              # Объем памяти для каждого Executor
+      spark.executor.cores         2               # Количество ядер для одного Executor
+      spark.driver.memory          2g              # Память для Driver
+      spark.executor.instances     3               # Количество Executors
+      spark.dynamicAllocation.enabled true         # Динамическое выделение ресурсов
+
+  Процесс выполнения Job:
+1. Код Spark приложения отправляется на кластер.
+2. Spark Driver создает DAG (Directed Acyclic Graph) задач.
+3. Cluster Manager (например, YARN) выделяет ресурсы и запускает Executors.
+4. Executors исполняют задачи и обрабатывают данные.
+5. Driver собирает результаты и возвращает их.
+
